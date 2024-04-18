@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English to Chinese Translator</title>
+</head>
+<body>
+    <h1>English to Chinese Translator</h1>
+    <form method="POST" action="/">
+        <label for="word">Enter the sentece to translate:</label>
+        <input type="text" id="word" name="word" required>
+        <button type="submit">Translate</button>
+    </form>
+    <div>
+        <h2>Translation:</h2>
+        <p>{{ translated_text }}</p>
+        <h2>Phonetic Pronunciation:</h2>
+        <p>{{ pinyin_text }}</p>
+    </div>
+</body>
+</html>
