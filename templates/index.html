@@ -4,19 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English to Chinese Translator</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#translate_form").submit(function(e) {
+                e.preventDefault();
+                translateEnglish();
+            });
+
+            $("#translate_chinese_form").submit(function(e) {
+                e.preventDefault();
+                translateChinese();
+            });
+
+            function translateEnglish() {
+                var word = $("#word").val();
+                $.ajax({
+                    url: '/',
+                    type: 'POST',
+                    data: { 'word': word },
+                    success: function(response) {
+                        $('#translated_text').text(response.translated_text);
+                        $('#pinyin_text').text(response.pinyin_text);
+                    }
+                });
+            }
+
+            function translateChinese() {
+                var chinese_word = $("#chinese_word").val();
+                $.ajax({
+                    url: '/translate_chinese',
+                    type: 'POST',
+                    data: { 'chinese_word': chinese_word },
+                    success: function(response) {
+                        $('#translated_chinese_text').text(response.translated_chinese_text);
+                        $('#english_pronunciation').text(response.english_pronunciation);
+                    }
+                });
+            }
+        });
+    </script>
 </head>
 <body>
     <h1>English to Chinese Translator</h1>
-    <form method="POST" action="/">
-        <label for="word">Enter the sentece to translate:</label>
+    <form id="translate_form">
+        <label for="word">Enter the sentence to translate:</label>
         <input type="text" id="word" name="word" required>
         <button type="submit">Translate</button>
     </form>
     <div>
         <h2>Translation:</h2>
-        <p>{{ translated_text }}</p>
+        <p id="translated_text"></p>
         <h2>Phonetic Pronunciation:</h2>
-        <p>{{ pinyin_text }}</p>
+        <p id="pinyin_text"></p>
+    </div>
+    <hr>
+    <h2>Chinese to English Translator</h2>
+    <form id="translate_chinese_form">
+        <label for="chinese_word">Enter the Chinese word to translate:</label>
+        <input type="text" id="chinese_word" name="chinese_word" required>
+        <button type="submit">Translate</button>
+    </form>
+    <div>
+        <h2>Translation:</h2>
+        <p id="translated_chinese_text"></p>
+        <h2>Chinese Translation:</h2>
+        <p id="english_pronunciation"></p>
     </div>
 </body>
 </html>

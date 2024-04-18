@@ -1,10 +1,12 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import requests
 import dragonmapper.hanzi
+from pypinyin import pinyin, Style
+from deep_translator import GoogleTranslator
 
 app = Flask(__name__)
 
-def english_to_pinyin(word):
+def chinese_to_pinyin(word):
     return dragonmapper.hanzi.to_pinyin(word)
 
 def translate_word(word):
@@ -18,16 +20,26 @@ def translate_word(word):
     translated_text = translation_data["responseData"]["translatedText"]
     return translated_text
 
+def translate_chinese_word(chinese_word):
+    translated = GoogleTranslator(source='auto', target='en').translate(chinese_word)
+    return translated, chinese_to_pinyin(chinese_word)
+
 @app.route("/", methods=["GET", "POST"])
-def index():
-    translated_text = None
-    pinyin_text = None
+def translate_english():
     if request.method == "POST":
         word = request.form["word"]
         translated_text = translate_word(word)
-        pinyin_text = english_to_pinyin(translated_text)
-    return render_template("index.html", translated_text=translated_text, pinyin_text=pinyin_text)
+        pinyin_text = chinese_to_pinyin(translated_text)
+        return jsonify({'translated_text': translated_text, 'pinyin_text': pinyin_text})
+    else:
+        return render_template("index.html")
+
+
+@app.route("/translate_chinese", methods=["POST"])
+def translate_chinese():
+    chinese_word = request.form["chinese_word"]
+    translated_chinese_text, english_pronunciation = translate_chinese_word(chinese_word)
+    return jsonify({'translated_chinese_text': translated_chinese_text, 'english_pronunciation': english_pronunciation})
 
 if __name__ == "__main__":
-    app.run(debug=True)
-
+    app.run(debug=False)
