@@ -17,6 +17,26 @@
                 translateChinese();
             });
 
+            $("#translate_chinese_img").submit(function(e) {
+                e.preventDefault();
+                transImg($(this)[0]);
+            });
+
+            function transImg(form) {
+                var formData = new FormData(form);
+                $.ajax({
+                    url: '/upload_image',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        $('#translated_img').text(response.translated_text);
+                        $('#chinese_text').text(response.chinese_text)
+                    }
+                });
+            }
+
             function translateEnglish() {
                 var word = $("#word").val();
                 $.ajax({
@@ -70,6 +90,18 @@
         <p id="translated_chinese_text"></p>
         <h2>Chinese Translation:</h2>
         <p id="english_pronunciation"></p>
+    </div>
+    <hr>
+    <h2>Chinese Image to English Translator</h2>
+    <form id="translate_chinese_img" enctype="multipart/form-data">
+        <input type="file" id="myFile" name="file">
+        <input type="submit" value="Upload">
+    </form>
+    <div>
+        <h2>Text:</h2>
+        <p id="chinese_text"></p>
+        <h2>Translation:</h2>
+        <p id="translated_img"></p>
     </div>
 </body>
 </html>
