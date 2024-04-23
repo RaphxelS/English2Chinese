@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, jsonify
-import requests
 import dragonmapper.hanzi
 from deep_translator import GoogleTranslator
 import os
@@ -19,14 +18,7 @@ def chinese_to_pinyin(word):
     return dragonmapper.hanzi.to_pinyin(word)
 
 def translate_word(word):
-    url = "https://api.mymemory.translated.net/get"
-    params = {
-        "q": word,
-        "langpair": "en|zh-CN"
-    }
-    response = requests.get(url, params=params)
-    translation_data = response.json()
-    translated_text = translation_data["responseData"]["translatedText"]
+    translated_text = GoogleTranslator(source='auto', target='zh-CN').translate(word)
     return translated_text
 
 def translate_chinese_word(chinese_word):

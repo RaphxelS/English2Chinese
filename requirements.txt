@@ -2,4 +2,3 @@ deep_translator==1.11.4
 dragonmapper==0.2.6
 easyocr==1.7.1
 Flask==3.0.3
-Requests==2.31.0
