@@ -35,11 +35,17 @@ def translate_chinese_word(chinese_word):
 
 def translate_img(img_path):
     reader = easyocr.Reader(['ch_sim','en'])
-    result = reader.readtext(img_path, detail = 0)
-    translated = GoogleTranslator(source='auto', target='en').translate(result[0])
-    print(translated)
+    results = reader.readtext(img_path, detail = 0)
+    translation = ""
+    og_text = ""
+    for result in results:
+        if (result != None):
+            og_text += result
+            translation += GoogleTranslator(source='auto', target='en').translate(result)
+            translation += '\n'
+    print(translation)
     os.remove(img_path)
-    return translated, result[0]
+    return translation, og_text
 
 
 @app.route("/", methods=["GET", "POST"])
